@@ -30,7 +30,10 @@ const cleanName=n=>String(n||'').replace(/MAIL/g,'').replace(/-WA/g,'').trim();
 const pointValue=c=>Number(c.points||0)*2500;
 const rupiah=n=>'Rp'+Number(n||0).toLocaleString('id-ID');
 const save=()=>localStorage.setItem(KEY,JSON.stringify(data));
+const formatBlastDate=iso=>{if(!iso)return 'Belum pernah di-blast'; const d=new Date(iso); if(Number.isNaN(d.getTime()))return 'Belum pernah di-blast'; return d.toLocaleString('id-ID',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'}).replace(/\./g,':');};
 
+// ATURAN OTOMATIS — dipertahankan seperti versi sebelumnya.
+// Tombol PILIH OTOMATIS hanya memakai daftar yang lolos aturan nilai poin.
 function serviceOptions(c){
   const v=pointValue(c);
   const ac=v>=99000 ? (v>=400000?5:v>=320000?4:v>=240000?3:v>=160000?2:1) : 0;
@@ -44,6 +47,26 @@ function serviceOptions(c){
   return arr;
 }
 
+// SEMUA LAYANAN untuk pemilihan manual.
+// Daftar manual boleh dipilih walaupun nilainya di atas poin; aturan pembatasan
+// hanya berlaku pada PILIH OTOMATIS agar aturan otomatis lama tidak berubah.
+function allServiceOptions(){
+  return [
+    {id:'ac1',label:'Pembersihan hingga 1 unit AC',price:99000},
+    {id:'ac2',label:'Pembersihan hingga 2 unit AC',price:160000},
+    {id:'ac3',label:'Pembersihan hingga 3 unit AC',price:240000},
+    {id:'ac4',label:'Pembersihan hingga 4 unit AC',price:320000},
+    {id:'ac5',label:'Pembersihan hingga 5 unit AC',price:400000},
+    {id:'sofa1',label:'Pembersihan sofa kain 1 seater',price:140000},
+    {id:'sofa2',label:'Pembersihan sofa kain 2 seater',price:280000},
+    {id:'sofa3',label:'Pembersihan sofa kain 3 seater',price:420000},
+    {id:'sofabed',label:'Pembersihan sofa bed kain 1 unit',price:280000},
+    {id:'m90',label:'Pembersihan kasur ukuran 90/100/120 x 200 cm',price:180000},
+    {id:'m160',label:'Pembersihan kasur ukuran 160 x 200 cm',price:220000},
+    {id:'m180',label:'Pembersihan kasur ukuran 180/200 x 200 cm',price:300000}
+  ];
+}
+
 function buildMessage(c, opts=serviceOptions(c)){
   const name=cleanName(c.name);
   let lines=opts.map((x,i)=>`${i+1}. ${x.label}`).join('\n');
@@ -54,7 +77,7 @@ function renderList(){
   const q=$('search').value.trim().toLowerCase();
   const list=data.filter(c=>{
     const match=!q||[c.name,c.phone,c.member].some(v=>String(v).toLowerCase().includes(q));
-    const fm=activeFilter==='Semua'||(c.status||'Belum Blast')===activeFilter;
+    const fm=activeFilter==='Semua'||activeFilter==='Follow Up' ? (activeFilter==='Semua'||(Number(c.blastCount||0)>0 && c.status!=='Transaksi' && c.followUpDone!==true)) : (c.status||'Belum Blast')===activeFilter;
     return match&&fm;
   });
   $('countText').textContent=`${list.length} customer`;
@@ -71,18 +94,55 @@ function openDetail(id){
   $('homeView').classList.add('hidden'); $('detailView').classList.remove('hidden');
   renderDetail();
 }
+function formatFollowUpDate(iso){if(!iso)return 'Belum dijadwalkan'; const d=new Date(iso); if(Number.isNaN(d.getTime()))return 'Belum dijadwalkan'; return d.toLocaleString('id-ID',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'}).replace(/\./g,':');}
+function followUpMessage(c){const name=cleanName(c.name); return `Selamat siang Kak ${name},\n\nSaya Ivan dari Informa.\n\nIzin mengingatkan kembali terkait penawaran jasa pembersihan dari Informa yang sebelumnya saya sampaikan.\n\nJika Kakak masih berminat menggunakan layanannya, saya siap bantu proses dan jadwalkan ya Kak 🙏`;}
 function renderDetail(){
-  const c=activeCustomer, opts=serviceOptions(c);
-  $('detail').innerHTML=`<div class="detail-head"><div class="avatar big">${esc(cleanName(c.name).slice(0,1))}</div><div><h2>${esc(cleanName(c.name))}</h2><div>${esc(c.phone)}</div></div></div><div class="stats"><div><strong>${c.points}</strong><small>POIN</small></div><div><strong>${rupiah(pointValue(c))}</strong><small>NILAI POIN</small></div></div><h3>PILIHAN LAYANAN</h3><div class="services">${opts.map(o=>`<label><input type="checkbox" data-service="${o.id}" ${selected.includes(o.id)?'checked':''}><span>${esc(o.label)}</span></label>`).join('')}</div><div class="actions"><button id="autoBtn" class="primary">PILIH OTOMATIS</button><button id="clearBtn" class="secondary">HAPUS PILIHAN</button></div><div class="message-box"><div class="mb-title">💬 PESAN WHATSAPP</div><pre id="message">${esc(buildMessage(c,opts.filter(o=>selected.includes(o.id))))}</pre></div><div class="actions"><button id="copyBtn" class="secondary">SALIN PESAN</button><button id="waBtn" class="wa">💬 KIRIM WHATSAPP</button></div>`;
+  const c=activeCustomer, autoOpts=serviceOptions(c), allOpts=allServiceOptions();
+  $('detail').innerHTML=`<div class="detail-head"><div class="avatar big">${esc(cleanName(c.name).slice(0,1))}</div><div><h2>${esc(cleanName(c.name))}</h2><div>${esc(c.phone)}</div></div></div><div class="stats"><div><strong>${c.points}</strong><small>POIN</small></div><div><strong>${rupiah(pointValue(c))}</strong><small>NILAI POIN</small></div></div><div class="blast-info"><div class="status-title">RIWAYAT BLAST</div><div class="blast-time">🕒 <b>Terakhir di-blast:</b> ${esc(formatBlastDate(c.lastBlastAt))}</div><div class="blast-count">${Number(c.blastCount||0)>0?`Sudah di-blast ${Number(c.blastCount)} kali`:'Belum ada riwayat pengiriman'}</div><div class="followup-info"><div>📅 <b>Follow up:</b> ${esc(formatFollowUpDate(c.followUpAt))}</div>${c.followUpAt?`<div class="followup-state">${new Date(c.followUpAt)<=new Date()?'<b>Perlu di-follow up sekarang</b>':'Follow up sudah dijadwalkan'}</div>`:''}</div></div><div class="status-card"><div class="status-title">STATUS CUSTOMER</div><select id="statusSelect"><option>Belum Blast</option><option>Sudah Blast</option><option>Pending</option><option>Transaksi</option></select></div><h3>PILIHAN LAYANAN</h3><div class="services">${allOpts.map(o=>`<label><input type="checkbox" data-service="${o.id}" ${selected.includes(o.id)?'checked':''}><span>${esc(o.label)}</span></label>`).join('')}</div><div class="actions"><button id="autoBtn" class="primary">PILIH OTOMATIS</button><button id="clearBtn" class="secondary">HAPUS PILIHAN</button></div><div class="actions follow-actions"><button id="scheduleFollowBtn" class="secondary">📅 JADWALKAN FOLLOW UP</button><button id="clearFollowBtn" class="secondary">✕ HAPUS JADWAL</button></div><div class="actions"><button id="followMsgBtn" class="secondary">💬 PESAN FOLLOW UP</button><button id="sendFollowBtn" class="wa">💬 KIRIM FOLLOW UP</button></div><div class="message-box"><div class="mb-title">💬 PESAN WHATSAPP</div><pre id="message">${esc(buildMessage(c,allOpts.filter(o=>selected.includes(o.id))))}</pre></div><div class="actions"><button id="copyBtn" class="secondary">SALIN PESAN</button><button id="waBtn" class="wa">💬 KIRIM WHATSAPP</button></div><div class="actions admin-actions"><button id="editBtn" class="secondary">✏️ EDIT CUSTOMER</button><button id="deleteBtn" class="danger">🗑️ HAPUS CUSTOMER</button></div>`;
+  $('statusSelect').value=c.status||'Belum Blast';
+  $('statusSelect').onchange=()=>{c.status=$('statusSelect').value;save();renderList();toast('Status disimpan');};
   document.querySelectorAll('[data-service]').forEach(x=>x.onchange=()=>{selected=[...document.querySelectorAll('[data-service]:checked')].map(e=>e.dataset.service); updateMessage();});
-  $('autoBtn').onclick=()=>{selected=opts.map(o=>o.id); renderDetail();};
+  // PILIH OTOMATIS tetap menggunakan aturan otomatis lama.
+  // Manual selection tetap bisa menambahkan layanan lain setelahnya.
+  $('autoBtn').onclick=()=>{selected=autoOpts.map(o=>mapAutoId(o)); renderDetail();};
   $('clearBtn').onclick=()=>{selected=[]; renderDetail();};
-  $('copyBtn').onclick=async()=>{await navigator.clipboard.writeText(buildMessage(c,opts.filter(o=>selected.includes(o.id)))); toast('Pesan berhasil disalin');};
-  $('waBtn').onclick=()=>{c.status='Sudah Blast'; save(); const text=buildMessage(c,opts.filter(o=>selected.includes(o.id))); window.open(`https://wa.me/${String(c.phone).replace(/[^0-9]/g,'')}?text=${encodeURIComponent(text)}`,'_blank');};
+  $('scheduleFollowBtn').onclick=()=>{const raw=prompt('Follow up berapa hari lagi?','2'); if(raw===null)return; const days=Number(raw); if(!Number.isFinite(days)||days<0){toast('Jumlah hari tidak valid');return;} c.followUpAt=new Date(Date.now()+days*86400000).toISOString(); c.status='Pending'; save(); renderDetail(); renderList(); toast(`Follow up dijadwalkan ${days} hari lagi`);};
+  $('clearFollowBtn').onclick=()=>{c.followUpAt=null; save(); renderDetail(); toast('Jadwal follow up dihapus');};
+  $('followMsgBtn').onclick=async()=>{await navigator.clipboard.writeText(followUpMessage(c)); toast('Pesan follow up disalin');};
+  $('sendFollowBtn').onclick=()=>{c.status='Pending'; c.followUpAt=null; c.followUpCount=Number(c.followUpCount||0)+1; c.followUpDone=true; c.lastFollowUpAt=new Date().toISOString(); save(); const text=followUpMessage(c); renderDetail(); renderList(); window.open(`https://wa.me/${String(c.phone).replace(/[^0-9]/g,'')}?text=${encodeURIComponent(text)}`,'_blank');};
+  $('copyBtn').onclick=async()=>{await navigator.clipboard.writeText(buildMessage(c,allOpts.filter(o=>selected.includes(o.id)))); toast('Pesan berhasil disalin');};
+  $('waBtn').onclick=()=>{c.status='Sudah Blast'; c.lastBlastAt=new Date().toISOString(); c.blastCount=Number(c.blastCount||0)+1; c.followUpDone=false; save(); const text=buildMessage(c,allOpts.filter(o=>selected.includes(o.id))); renderDetail(); renderList(); window.open(`https://wa.me/${String(c.phone).replace(/[^0-9]/g,'')}?text=${encodeURIComponent(text)}`,'_blank');};
+  $('editBtn').onclick=()=>editCustomer(c);
+  $('deleteBtn').onclick=()=>deleteCustomer(c);
 }
-function updateMessage(){const opts=serviceOptions(activeCustomer); $('message').textContent=buildMessage(activeCustomer,opts.filter(o=>selected.includes(o.id)));}
+function editCustomer(c){
+  const name=prompt('Nama customer:', cleanName(c.name));
+  if(name===null)return;
+  const phone=prompt('No HP (628...):', c.phone);
+  if(phone===null)return;
+  const pointsRaw=prompt('Jumlah poin:', String(c.points));
+  if(pointsRaw===null)return;
+  const points=Number(pointsRaw);
+  if(!name.trim() || !phone.trim() || !Number.isFinite(points) || points<0){toast('Data tidak valid');return;}
+  const normalized=phone.replace(/[^0-9]/g,'');
+  const duplicate=data.find(x=>x!==c && (String(x.phone).replace(/[^0-9]/g,'')===normalized));
+  if(duplicate){toast('No HP sudah digunakan customer lain');return;}
+  c.name=name.trim(); c.phone=normalized; c.points=points; save(); renderDetail(); toast('Customer diperbarui');
+}
+function deleteCustomer(c){
+  if(!confirm(`Hapus customer ${cleanName(c.name)}?`))return;
+  data=data.filter(x=>x!==c); save(); activeCustomer=null; selected=[]; $('detailView').classList.add('hidden'); $('homeView').classList.remove('hidden'); renderList(); toast('Customer dihapus');
+}
+
+function mapAutoId(o){
+  if(o.id==='ac') return o.label.includes('1 unit')?'ac1':o.label.includes('2 unit')?'ac2':o.label.includes('3 unit')?'ac3':o.label.includes('4 unit')?'ac4':'ac5';
+  if(o.id==='sofa') return o.label.includes('1 seater')?'sofa1':o.label.includes('2 seater')?'sofa2':'sofa3';
+  return o.id;
+}
+function updateMessage(){const opts=allServiceOptions(); $('message').textContent=buildMessage(activeCustomer,opts.filter(o=>selected.includes(o.id)));}
 function toast(t){$('toast').textContent=t;$('toast').classList.add('show');setTimeout(()=>$('toast').classList.remove('show'),1800);}
 
+$('followUpBtn').onclick=()=>{activeFilter='Follow Up';document.querySelectorAll('#filters button').forEach(x=>x.classList.toggle('active',x.dataset.filter==='Follow Up'));renderList();toast('Menampilkan customer yang perlu di-follow up');};
 $('search').oninput=renderList;
 document.querySelectorAll('#filters button').forEach(b=>b.onclick=()=>{activeFilter=b.dataset.filter;document.querySelectorAll('#filters button').forEach(x=>x.classList.toggle('active',x===b));renderList();});
 $('backBtn').onclick=()=>{$('detailView').classList.add('hidden');$('homeView').classList.remove('hidden');renderList();};
