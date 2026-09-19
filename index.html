@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0f172a">
+<meta name="description" content="Blast Poin HRR">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="stylesheet" href="style.css">
+<title>Blast Poin HRR</title>
+</head>
+<body>
+<div id="app">
+  <header class="topbar">
+    <div>
+      <div class="brand">BLAST POIN HRR</div>
+      <div class="subbrand">Customer follow-up</div>
+    </div>
+    <button class="icon-btn" id="refreshBtn" aria-label="Muat ulang">↻</button>
+  </header>
+
+  <main id="homeView" class="view">
+    <section class="search-wrap">
+      <span>⌕</span>
+      <input id="search" type="search" placeholder="Cari nama / HP / member" autocomplete="off">
+    </section>
+
+    <div class="filters" id="filters">
+      <button data-filter="Semua" class="active">Semua</button>
+      <button data-filter="Belum Blast">Belum Blast</button>
+      <button data-filter="Sudah Blast">Sudah Blast</button>
+      <button data-filter="Pending">Pending</button>
+      <button data-filter="Transaksi">Transaksi</button>
+    </div>
+
+    <div class="toolbar">
+      <span id="countText"></span>
+      <button class="small-btn" id="addBtn">＋ Customer</button>
+    </div>
+    <section id="customerList" class="customer-list"></section>
+  </main>
+
+  <main id="detailView" class="view hidden">
+    <button class="back-btn" id="backBtn">← Kembali</button>
+    <section id="detail"></section>
+  </main>
+
+  <div id="toast" class="toast"></div>
+</div>
+<script src="app.js"></script>
+</body>
+</html>
