@@ -4,50 +4,53 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#0f172a">
-<meta name="description" content="Blast Poin HRR">
-<link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="style.css">
 <title>Blast Poin HRR</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Arial,system-ui,sans-serif;background:#f5f7fb;color:#111827}.hidden{display:none!important}.topbar{position:sticky;top:0;z-index:5;background:#0f172a;color:#fff;padding:16px;display:flex;justify-content:space-between;align-items:center}.brand{font-weight:800;letter-spacing:1px}.subbrand{font-size:12px;opacity:.7;margin-top:3px}.icon-btn{border:0;background:#334155;color:#fff;border-radius:10px;padding:8px 11px;font-size:18px}.view{max-width:720px;margin:auto;padding:14px}.search-wrap{background:#fff;border:1px solid #e5e7eb;border-radius:14px;padding:10px 12px;display:flex;gap:8px;align-items:center}.search-wrap input{border:0;outline:0;width:100%;font-size:15px}.filters{display:flex;gap:7px;overflow:auto;padding:12px 0}.filters button,.small-btn,.secondary,.primary,.wa,.danger{border:0;border-radius:10px;padding:9px 11px;font-weight:700;white-space:nowrap}.filters button{background:#e5e7eb}.filters button.active{background:#0f172a;color:#fff}.toolbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}.small-btn{background:#fff;border:1px solid #dbe1ea}.customer{width:100%;border:1px solid #e5e7eb;background:#fff;border-radius:15px;padding:13px;display:flex;align-items:center;gap:10px;text-align:left;margin:8px 0}.avatar{width:42px;height:42px;border-radius:50%;background:#e2e8f0;display:grid;place-items:center;font-weight:800}.avatar.big{width:50px;height:50px}.cmain{display:grid;gap:3px;flex:1}.cmain span{font-size:13px;color:#64748b}.status{font-size:11px;border-radius:999px;padding:5px 8px;background:#e2e8f0}.status.sudah-blast{background:#dcfce7}.status.pending{background:#fef3c7}.status.transaksi{background:#dbeafe}.back-btn{border:0;background:none;padding:4px 0 14px;font-weight:700}.detail-head{display:flex;gap:12px;align-items:center}.detail-head h2{margin:0 0 4px}.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:15px 0}.stats>div,.blast-info,.status-card,.message-box{background:#fff;border:1px solid #e5e7eb;border-radius:15px;padding:14px}.stats strong{display:block;font-size:22px}.stats small{color:#64748b}.status-title{font-size:12px;font-weight:800;color:#64748b;margin-bottom:7px}.blast-info{margin-bottom:14px}.services{display:grid;gap:8px}.services label{background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:11px;display:flex;gap:9px}.actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0}.primary{background:#0f172a;color:#fff}.secondary{background:#e2e8f0;color:#111827}.wa{background:#16a34a;color:#fff}.danger{background:#dc2626;color:#fff}.message-box{margin-top:12px}.mb-title{font-weight:800;margin-bottom:9px}.message-box pre{white-space:pre-wrap;font:inherit;margin:0;font-size:14px;line-height:1.5}.login-wrap{min-height:100vh;display:grid;place-items:center;padding:20px}.login-card{width:min(420px,100%);background:#fff;border:1px solid #e5e7eb;border-radius:20px;padding:22px;box-shadow:0 10px 35px #00000010}.login-card h1{margin:0 0 6px}.login-card p{color:#64748b;margin:0 0 20px}.field{margin:12px 0}.field label{display:block;font-size:13px;font-weight:700;margin-bottom:6px}.field input{width:100%;padding:13px;border:1px solid #cbd5e1;border-radius:12px;font-size:16px}.login-btn{width:100%;border:0;border-radius:12px;padding:13px;background:#0f172a;color:#fff;font-weight:800;font-size:16px}.error{color:#b91c1c;background:#fee2e2;padding:10px;border-radius:10px;margin:10px 0;font-size:13px}.userbar{font-size:12px;color:#cbd5e1;margin-top:4px}.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(20px);background:#111827;color:#fff;padding:10px 14px;border-radius:10px;opacity:0;pointer-events:none;transition:.2s}.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
 </head>
 <body>
-<div id="app">
-  <header class="topbar">
-    <div>
-      <div class="brand">BLAST POIN HRR</div>
-      <div class="subbrand">Customer follow-up</div>
-    </div>
-    <button class="icon-btn" id="refreshBtn" aria-label="Muat ulang">↻</button>
-  </header>
-
-  <main id="homeView" class="view">
-    <section class="search-wrap">
-      <span>⌕</span>
-      <input id="search" type="search" placeholder="Cari nama / HP / member" autocomplete="off">
-    </section>
-
-    <div class="filters" id="filters">
-      <button data-filter="Semua" class="active">Semua</button>
-      <button data-filter="Belum Blast">Belum Blast</button>
-      <button data-filter="Sudah Blast">Sudah Blast</button>
-      <button data-filter="Pending">Pending</button>
-      <button data-filter="Transaksi">Transaksi</button>
-      <button data-filter="Follow Up">Follow Up</button>
-    </div>
-
-    <div class="toolbar">
-      <span id="countText"></span>
-      <div style="display:flex;gap:6px"><button class="small-btn" id="followUpBtn">💬 Follow Up</button><button class="small-btn" id="addBtn">＋ Customer</button></div>
-    </div>
-    <section id="customerList" class="customer-list"></section>
-  </main>
-
-  <main id="detailView" class="view hidden">
-    <button class="back-btn" id="backBtn">← Kembali</button>
-    <section id="detail"></section>
-  </main>
-
-  <div id="toast" class="toast"></div>
+<div id="loginView" class="login-wrap">
+  <div class="login-card">
+    <h1>BLAST POIN HRR</h1>
+    <p>Silakan masuk untuk mengakses data customer.</p>
+    <div id="loginError" class="error hidden"></div>
+    <div class="field"><label>Username</label><input id="username" autocomplete="username" placeholder="Masukkan username"></div>
+    <div class="field"><label>NIP</label><input id="nip" type="password" inputmode="numeric" autocomplete="current-password" placeholder="Masukkan NIP"></div>
+    <button id="loginBtn" class="login-btn">MASUK</button>
+  </div>
 </div>
-<script src="app.js"></script>
-</body>
-</html>
+<div id="app" class="hidden">
+<header class="topbar"><div><div class="brand">BLAST POIN HRR</div><div class="subbrand">Customer follow-up <span id="userLabel"></span></div></div><button class="icon-btn" id="logoutBtn">↪</button></header>
+<main id="homeView" class="view"><section class="search-wrap"><span>⌕</span><input id="search" type="search" placeholder="Cari nama / HP / member"></section><div class="filters" id="filters"><button data-filter="Semua" class="active">Semua</button><button data-filter="Belum Blast">Belum Blast</button><button data-filter="Sudah Blast">Sudah Blast</button><button data-filter="Pending">Pending</button><button data-filter="Transaksi">Transaksi</button><button data-filter="Follow Up">Follow Up</button></div><div class="toolbar"><span id="countText"></span><button class="small-btn" id="addBtn">＋ Customer</button></div><section id="customerList"></section></main>
+<main id="detailView" class="view hidden"><button class="back-btn" id="backBtn">← Kembali</button><section id="detail"></section></main>
+</div><div id="toast" class="toast"></div>
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js';
+import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/12.2.1/firebase-auth.js';
+import { getFirestore, doc, getDoc, collection, getDocs, addDoc, updateDoc, deleteDoc } from 'https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js';
+
+const firebaseConfig={apiKey:'AIzaSyAzy2cwo5k47KcWevC9-_Nqejo4-fjoG9Y',authDomain:'blast-poin-hrr-253dc.firebaseapp.com',projectId:'blast-poin-hrr-253dc',storageBucket:'blast-poin-hrr-253dc.firebasestorage.app',messagingSenderId:'999695263332',appId:'1:999695263332:web:59241d6598e20d979ba171',measurementId:'G-XZ3HGP6C1J'};
+const app=initializeApp(firebaseConfig), auth=getAuth(app), db=getFirestore(app);
+let data=[], activeFilter='Semua', activeCustomer=null, selected=[], currentUid=null;
+const $=id=>document.getElementById(id); const cleanName=n=>String(n||'').replace(/MAIL/g,'').replace(/-WA/g,'').trim(); const pointValue=c=>Number(c.points||0)*2500; const rupiah=n=>'Rp'+Number(n||0).toLocaleString('id-ID'); const esc=s=>String(s).replace(/[&<>'"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[m])); const slug=s=>String(s).toLowerCase().replace(/\s/g,'-');
+function toast(t){$('toast').textContent=t;$('toast').classList.add('show');setTimeout(()=>$('toast').classList.remove('show'),1800)}
+function showLoginError(t){$('loginError').textContent=t;$('loginError').classList.remove('hidden')}
+function clearLoginError(){$('loginError').classList.add('hidden')}
+function emailFromUsername(u){return String(u||'').trim().toLowerCase().replace(/\s+/g,'')+'@blastpoinhrr.app'}
+function serviceOptions(c){const v=pointValue(c);const ac=v>=99000?(v>=400000?5:v>=320000?4:v>=240000?3:v>=160000?2:1):0;const arr=[];if(ac)arr.push({id:'ac',label:`Pembersihan hingga ${ac} unit AC`,price:ac===1?99000:ac===2?160000:160000+(ac-2)*80000});if(v>=140000)arr.push({id:'sofa',label:`Pembersihan sofa kain ${v>=420000?3:v>=280000?2:1} seater`,price:v>=420000?420000:v>=280000?280000:140000});if(v>=280000)arr.push({id:'sofabed',label:'Pembersihan sofa bed kain 1 unit',price:280000});if(v>=180000)arr.push({id:'m90',label:'Pembersihan kasur ukuran 90/100/120 x 200 cm',price:180000});if(v>=220000)arr.push({id:'m160',label:'Pembersihan kasur ukuran 160 x 200 cm',price:220000});if(v>=300000)arr.push({id:'m180',label:'Pembersihan kasur ukuran 180/200 x 200 cm',price:300000});return arr}
+function allServiceOptions(){return[{id:'ac1',label:'Pembersihan hingga 1 unit AC',price:99000},{id:'ac2',label:'Pembersihan hingga 2 unit AC',price:160000},{id:'ac3',label:'Pembersihan hingga 3 unit AC',price:240000},{id:'ac4',label:'Pembersihan hingga 4 unit AC',price:320000},{id:'ac5',label:'Pembersihan hingga 5 unit AC',price:400000},{id:'sofa1',label:'Pembersihan sofa kain 1 seater',price:140000},{id:'sofa2',label:'Pembersihan sofa kain 2 seater',price:280000},{id:'sofa3',label:'Pembersihan sofa kain 3 seater',price:420000},{id:'sofabed',label:'Pembersihan sofa bed kain 1 unit',price:280000},{id:'m90',label:'Pembersihan kasur ukuran 90/100/120 x 200 cm',price:180000},{id:'m160',label:'Pembersihan kasur ukuran 160 x 200 cm',price:220000},{id:'m180',label:'Pembersihan kasur ukuran 180/200 x 200 cm',price:300000}]}
+function mapAutoId(o){if(o.id==='ac')return o.label.includes('1 unit')?'ac1':o.label.includes('2 unit')?'ac2':o.label.includes('3 unit')?'ac3':o.label.includes('4 unit')?'ac4':'ac5';if(o.id==='sofa')return o.label.includes('1 seater')?'sofa1':o.label.includes('2 seater')?'sofa2':'sofa3';return o.id}
+function buildMessage(c,opts){return `Selamat siang Kak ${cleanName(c.name)},\n\nPerkenalkan saya Ivan dari Informa. Mau menawarkan untuk Poin yang Kakak punya bisa di gunakan untuk jasa pembersihan dari Informa. Berikut beberapa pilihan yang bisa digunakan:\n\n${opts.map((x,i)=>`${i+1}. ${x.label}`).join('\n')}\n\nMau saya bantu jadwalkan, Kak? Layanannya free, cukup tukar poin member 🙏`}
+function followUpMessage(c){return `Selamat siang Kak ${cleanName(c.name)},\n\nSaya Ivan dari Informa.\n\nIzin mengingatkan kembali terkait penawaran jasa pembersihan dari Informa yang sebelumnya saya sampaikan.\n\nJika Kakak masih berminat menggunakan layanannya, saya siap bantu proses dan jadwalkan ya Kak 🙏`}
+function formatDate(iso,empty='Belum pernah di-blast'){if(!iso)return empty;const d=new Date(iso);return Number.isNaN(d.getTime())?empty:d.toLocaleString('id-ID',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'}).replace(/\./g,':')}
+async function loadCustomers(){if(!currentUid)return;const snap=await getDocs(collection(db,'users',currentUid,'customers'));data=snap.docs.map(d=>({id:d.id,...d.data()}));renderList()}
+function renderList(){const q=$('search').value.trim().toLowerCase();const list=data.filter(c=>{const match=!q||[c.name,c.phone,c.member].some(v=>String(v||'').toLowerCase().includes(q));let fm=true;if(activeFilter==='Follow Up')fm=Number(c.blastCount||0)>0&&c.status!=='Transaksi'&&c.followUpDone!==true;else if(activeFilter!=='Semua')fm=(c.status||'Belum Blast')===activeFilter;return match&&fm});$('countText').textContent=`${list.length} customer`;$('customerList').innerHTML=list.map(c=>`<button class="customer" data-id="${esc(c.id)}"><div class="avatar">${esc(cleanName(c.name).slice(0,1).toUpperCase())}</div><div class="cmain"><b>${esc(cleanName(c.name))}</b><span>${esc(c.phone||'')}</span><span>${esc(c.points||0)} poin</span></div><span class="status ${slug(c.status||'Belum Blast')}" >${esc(c.status||'Belum Blast')}</span></button>`).join('')||'<div class="empty">Belum ada customer di database Anda.</div>';document.querySelectorAll('.customer').forEach(b=>b.onclick=()=>openDetail(b.dataset.id))}
+function openDetail(id){activeCustomer=data.find(c=>c.id===id);if(!activeCustomer)return;selected=serviceOptions(activeCustomer).map(x=>x.id);$('homeView').classList.add('hidden');$('detailView').classList.remove('hidden');renderDetail()}
+function renderDetail(){const c=activeCustomer,autoOpts=serviceOptions(c),allOpts=allServiceOptions();$('detail').innerHTML=`<div class="detail-head"><div class="avatar big">${esc(cleanName(c.name).slice(0,1))}</div><div><h2>${esc(cleanName(c.name))}</h2><div>${esc(c.phone||'')}</div></div></div><div class="stats"><div><strong>${esc(c.points||0)}</strong><small>POIN</small></div><div><strong>${rupiah(pointValue(c))}</strong><small>NILAI POIN</small></div></div><div class="blast-info"><div class="status-title">RIWAYAT BLAST</div><div>🕒 <b>Terakhir di-blast:</b> ${esc(formatDate(c.lastBlastAt))}</div><div>${Number(c.blastCount||0)>0?`Sudah di-blast ${Number(c.blastCount)} kali`:'Belum ada riwayat pengiriman'}</div></div><div class="status-card"><div class="status-title">STATUS CUSTOMER</div><select id="statusSelect"><option>Belum Blast</option><option>Sudah Blast</option><option>Pending</option><option>Transaksi</option></select></div><h3>PILIHAN LAYANAN</h3><div class="services">${allOpts.map(o=>`<label><input type="checkbox" data-service="${o.id}" ${selected.includes(o.id)?'checked':''}><span>${esc(o.label)}</span></label>`).join('')}</div><div class="actions"><button id="autoBtn" class="primary">PILIH OTOMATIS</button><button id="clearBtn" class="secondary">HAPUS PILIHAN</button></div><div class="actions"><button id="followMsgBtn" class="secondary">💬 PESAN FOLLOW UP</button><button id="sendFollowBtn" class="wa">💬 KIRIM FOLLOW UP</button></div><div class="message-box"><div class="mb-title">💬 PESAN WHATSAPP</div><pre id="message">${esc(buildMessage(c,allOpts.filter(o=>selected.includes(o.id))))}</pre></div><div class="actions"><button id="copyBtn" class="secondary">SALIN PESAN</button><button id="waBtn" class="wa">💬 KIRIM WHATSAPP</button></div>`;$('statusSelect').value=c.status||'Belum Blast';$('statusSelect').onchange=async()=>{c.status=$('statusSelect').value;await updateDoc(doc(db,'users',currentUid,'customers',c.id),{status:c.status});renderList();toast('Status disimpan')};document.querySelectorAll('[data-service]').forEach(x=>x.onchange=()=>{selected=[...document.querySelectorAll('[data-service]:checked')].map(e=>e.dataset.service);updateMessage()});$('autoBtn').onclick=()=>{selected=autoOpts.map(mapAutoId);renderDetail()};$('clearBtn').onclick=()=>{selected=[];renderDetail()};$('followMsgBtn').onclick=async()=>{await navigator.clipboard.writeText(followUpMessage(c));toast('Pesan follow up disalin')};$('sendFollowBtn').onclick=()=>{const text=followUpMessage(c);c.status='Pending';c.followUpDone=true;c.followUpCount=Number(c.followUpCount||0)+1;c.lastFollowUpAt=new Date().toISOString();updateDoc(doc(db,'users',currentUid,'customers',c.id),{status:c.status,followUpDone:true,followUpCount:c.followUpCount,lastFollowUpAt:c.lastFollowUpAt});window.open(`https://wa.me/${String(c.phone||'').replace(/[^0-9]/g,'')}?text=${encodeURIComponent(text)}`,'_blank');renderList();toast('Follow up dikirim')};$('copyBtn').onclick=async()=>{await navigator.clipboard.writeText(buildMessage(c,allOpts.filter(o=>selected.includes(o.id))));toast('Pesan berhasil disalin')};$('waBtn').onclick=async()=>{const text=buildMessage(c,allOpts.filter(o=>selected.includes(o.id)));c.status='Sudah Blast';c.lastBlastAt=new Date().toISOString();c.blastCount=Number(c.blastCount||0)+1;c.followUpDone=false;await updateDoc(doc(db,'users',currentUid,'customers',c.id),{status:c.status,lastBlastAt:c.lastBlastAt,blastCount:c.blastCount,followUpDone:false});renderList();window.open(`https://wa.me/${String(c.phone||'').replace(/[^0-9]/g,'')}?text=${encodeURIComponent(text)}`,'_blank');toast('Blast dicatat')};}
+function updateMessage(){const opts=allServiceOptions();$('message').textContent=buildMessage(activeCustomer,opts.filter(o=>selected.includes(o.id)))}
+$('loginBtn').onclick=async()=>{clearLoginError();const u=$('username').value.trim();const p=$('nip').value;if(!u||!p){showLoginError('Username dan NIP wajib diisi.');return}$('loginBtn').disabled=true;$('loginBtn').textContent='MEMERIKSA...';try{await signInWithEmailAndPassword(auth,emailFromUsername(u),p)}catch(e){console.error(e);showLoginError('Login gagal. Periksa username dan NIP.')}finally{$('loginBtn').disabled=false;$('loginBtn').textContent='MASUK'}};
+$('logoutBtn').onclick=()=>signOut(auth);$('search').oninput=renderList;document.querySelectorAll('#filters button').forEach(b=>b.onclick=()=>{activeFilter=b.dataset.filter;document.querySelectorAll('#filters button').forEach(x=>x.classList.toggle('active',x===b));renderList()});$('backBtn').onclick=()=>{$('detailView').classList.add('hidden');$('homeView').classList.remove('hidden');renderList()};$('addBtn').onclick=async()=>{const name=prompt('Nama customer:');if(!name)return;const phone=prompt('No HP (628...):');if(!phone)return;const points=Number(prompt('Jumlah poin:','100'));if(!Number.isFinite(points))return;await addDoc(collection(db,'users',currentUid,'customers'),{member:'MANUAL-'+Date.now(),name:name.trim(),phone:phone.replace(/[^0-9]/g,''),points,status:'Belum Blast',blastCount:0,followUpDone:false});await loadCustomers();toast('Customer tersimpan di Firebase')};
+onAuthStateChanged(auth,async user=>{if(user){currentUid=user.uid;try{const p=await getDoc(doc(db,'users',user.uid));if(!p.exists()){await signOut(auth);showLoginError('Akun login belum memiliki profil pengguna di Firestore.');return}$('userLabel').textContent=' • '+(p.data().username||user.email);$('loginView').classList.add('hidden');$('app').classList.remove('hidden');await loadCustomers()}catch(e){console.error(e);showLoginError('Login berhasil, tetapi data pengguna tidak dapat dibaca. Cek Firestore Rules.');await signOut(auth)}}else{$('loginView').classList.remove('hidden');$('app').classList.add('hidden');currentUid=null;data=[]}});
+</script>
+</body></html>
