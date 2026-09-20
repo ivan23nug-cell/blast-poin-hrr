@@ -75,13 +75,24 @@ function login(){
     <div class="logo">Blast Poin HRR</div><p class="muted" style="text-align:center">Masuk untuk mengelola customer milik Anda.</p>
     <label>Username</label><input id="username" autocomplete="username" placeholder="Masukkan username">
     <label>NIP</label><input id="nip" type="password" autocomplete="current-password" placeholder="Masukkan NIP">
+    <p class="muted" style="font-size:12px;margin-top:6px">Login menggunakan Username + NIP yang terdaftar sebagai password di Firebase.</p>
     <button class="btn primary" style="width:100%;margin-top:15px" id="loginBtn">Masuk</button>
     <div id="loginMsg" class="notice hidden"></div>
   </div></div>`;
   $("loginBtn").onclick=async()=>{
     const u=$("username").value.trim().toLowerCase(), p=$("nip").value;
     if(!u||!p) return showLogin("Username dan NIP wajib diisi.");
-    try{await signInWithEmailAndPassword(auth,`${u}@blastpoinhrr.app`,p)}catch(e){showLogin("Username atau NIP tidak sesuai.");}
+    try{
+      await signInWithEmailAndPassword(auth,`${u}@blastpoinhrr.app`,p);
+    }catch(e){
+      console.error("Firebase login error:", e);
+      const code=e?.code||"";
+      if(code==="auth/invalid-credential" || code==="auth/wrong-password" || code==="auth/user-not-found")
+        showLogin("Login gagal. Username benar, tetapi NIP/password Firebase tidak cocok. Periksa kembali NIP yang dimasukkan.");
+      else if(code==="auth/user-disabled") showLogin("Akun ini sedang dinonaktifkan di Firebase.");
+      else if(code==="auth/too-many-requests") showLogin("Terlalu banyak percobaan login. Tunggu beberapa saat lalu coba lagi.");
+      else showLogin("Login gagal: "+(e?.message||"terjadi kesalahan Firebase."));
+    }
   };
 }
 function showLogin(t){$("loginMsg").textContent=t;$("loginMsg").classList.remove("hidden")}
