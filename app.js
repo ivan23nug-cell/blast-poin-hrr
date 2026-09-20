@@ -6,7 +6,7 @@ import {
 } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyAzy2cwo5k47KcV9-_Nqejo-f4o-fjoG9Y",
+  apiKey: "AIzaSyAzy2cwo5k47KcWevC9-_Nqejo4-fjoG9Y",
   authDomain: "blast-poin-hrr-253dc.firebaseapp.com",
   projectId: "blast-poin-hrr-253dc",
   storageBucket: "blast-poin-hrr-253dc.firebasestorage.app",
