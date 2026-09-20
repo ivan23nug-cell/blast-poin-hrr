@@ -1,0 +1,9 @@
+{
+  "name": "Blast Poin HRR",
+  "short_name": "Blast Poin HRR",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#f5f7f8",
+  "theme_color": "#0f766e",
+  "icons": []
+}
