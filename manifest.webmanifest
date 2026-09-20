@@ -1,1 +1,8 @@
-{"name":"Blast Poin HRR V8","short_name":"Blast Poin HRR","start_url":"./","display":"standalone","background_color":"#f4f6f8","theme_color":"#0f172a","description":"Aplikasi follow-up customer Blast Poin HRR","icons":[]}
+{
+  "name":"Blast Poin HRR",
+  "short_name":"Blast Poin HRR",
+  "start_url":"./",
+  "display":"standalone",
+  "background_color":"#f4f8fc",
+  "theme_color":"#0866d6"
+}
