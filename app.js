@@ -2,7 +2,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/fireba
 import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
 import { getFirestore, doc, getDoc, collection, getDocs, addDoc, setDoc, updateDoc, deleteDoc, writeBatch, serverTimestamp, query, orderBy } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
 
-const firebaseConfig={apiKey:"AIzaSyAzy2cwo5k47KcWev9-_Nqejo-f4o-fjoG9Y",authDomain:"blast-poin-hrr-253dc.firebaseapp.com",projectId:"blast-poin-hrr-253dc",storageBucket:"blast-poin-hrr-253dc.firebasestorage.app",messagingSenderId:"999695263332",appId:"1:999695263332:web:59241d6598e20d979ba171",measurementId:"G-XZ3HGP6C1J"};
+const firebaseConfig={apiKey:"AIzaSyAzy2cwo5k47KcWevC9-_Nqejo4-fjoG9Y",authDomain:"blast-poin-hrr-253dc.firebaseapp.com",projectId:"blast-poin-hrr-253dc",storageBucket:"blast-poin-hrr-253dc.firebasestorage.app",messagingSenderId:"999695263332",appId:"1:999695263332:web:59241d6598e20d979ba171",measurementId:"G-XZ3HGP6C1J"};
 const app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app);
 const SERVICES=[
  ["ac1","Pembersihan hingga 1 unit AC",99000],["ac2","Pembersihan hingga 2 unit AC",160000],["ac3","Pembersihan hingga 3 unit AC",240000],["ac4","Pembersihan hingga 4 unit AC",320000],["ac5","Pembersihan hingga 5 unit AC",400000],
