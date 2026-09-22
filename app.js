@@ -3,7 +3,15 @@ import { getAuth,onAuthStateChanged,signInWithEmailAndPassword,createUserWithEma
 import { getFirestore,doc,getDoc,collection,getDocs,getDocsFromServer,addDoc,setDoc,updateDoc,serverTimestamp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
 import { getMessaging,getToken,onMessage } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-messaging.js";
 
-const firebaseConfig={apiKey:"AIzaSyAzy2cwo5k47KcWevC9-_NqejoG9Y",authDomain:"blast-poin-hrr-253dc.firebaseapp.com",projectId:"blast-poin-hrr-253dc",storageBucket:"blast-poin-hrr-253dc.firebasestorage.app",messagingSenderId:"999695263332",appId:"1:999695263332:web:59241d6598e20d979ba171",measurementId:"G-XZ3HGP6C1"};
+const firebaseConfig = {
+  apiKey: "AIzaSyAzy2cwo5k47KcWevC9-_Nqejo4-fjoG9Y",
+  authDomain: "blast-poin-hrr-253dc.firebaseapp.com",
+  projectId: "blast-poin-hrr-253dc",
+  storageBucket: "blast-poin-hrr-253dc.firebasestorage.app",
+  messagingSenderId: "999695263332",
+  appId: "1:999695263332:web:59241d6598e20d979ba171",
+  measurementId: "G-XZ3HGP6C1J"
+};
 const app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app);
 const VAPID_KEY="BEiH0GoSNDz08ZstWj_0EbXQ6UY7v6gX6s-wzG8XhIAY97lqmOzHEThdkYqwbnDILeYzMp69ZCU_zeKv21udypQ";
 let messaging=null;
